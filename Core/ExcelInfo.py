@@ -143,12 +143,14 @@ class ExcelInfo:
                         self.sheetInfos[sheetInfo.masterHead.name].sheet[sheetInfo.masterCols[r]][idHead]=sheetInfo.table[r]
             else:
                 for r in range(0,len(sheetInfo.table)):
-                    if sheetInfo.masterCols[r] not in self.sheetInfos[sheetInfo.masterHead.name].sheet:
-                        continue
-                    masterRow=self.sheetInfos[sheetInfo.masterHead.name].sheet[sheetInfo.masterCols[r]]
-                    if sheetInfo.name not in masterRow:
-                        masterRow[sheetInfo.name]=[]
-                    masterRow[sheetInfo.name].append(sheetInfo.table[r])
+                    for mc in range(0,len(sheetInfo.masterCols[r])):
+                        if sheetInfo.masterCols[r][mc] not in self.sheetInfos[sheetInfo.masterHead.name].sheet:
+                            continue
+                        masterRow=self.sheetInfos[sheetInfo.masterHead.name].sheet[sheetInfo.masterCols[r][mc]]
+                        if sheetInfo.name not in masterRow:
+                            masterRow[sheetInfo.name]=[]
+                        masterRow[sheetInfo.name].append(sheetInfo.table[r])
+                                
 
             
 
@@ -254,6 +256,7 @@ class ExcelInfo:
         result = {}
         if sheetInfo.masterHead!=None:
             cell =sheet.cell_value(rowIndex,sheetInfo.masterHead.index)
+            cell=cell.split('\n')
             #cell = row[sheetInfo.masterHead.index]
             sheetInfo.masterCols.append(cell)
         headIndex=0
