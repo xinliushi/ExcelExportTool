@@ -115,7 +115,8 @@ class ExcelInfo:
         for sheetInfo in self.sheetInfos.values():
            for r in sheetInfo.sheet:
                value = sheetInfo.sheet[r]
-               value.pop(sheetInfo.idHead.name)
+               if sheetInfo.idHead.name in value:
+                value.pop(sheetInfo.idHead.name)
         pass
 
     #处理表单父子关系
