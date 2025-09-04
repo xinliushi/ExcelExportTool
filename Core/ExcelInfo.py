@@ -95,6 +95,7 @@ class ExcelInfo:
         self.ignoreEmpty=i
         self.setupSheetInfos(xlrd.open_workbook(excelName))
         self.parseSheetInfos()
+        self.cleanSheetInfos()
         pass
 
     #获取最终所有可用表单
@@ -109,6 +110,14 @@ class ExcelInfo:
             else:
                 table[sheetInfo.name]=sheetInfo.table
         return table
+    
+    def cleanSheetInfos(self):
+        for sheetInfo in self.sheetInfos.values():
+           for r in sheetInfo.sheet:
+               value = sheetInfo.sheet[r]
+               value.pop(sheetInfo.idHead.name)
+        pass
+
     #处理表单父子关系
     def parseSheetInfos(self):
         if self.sheetInfos==None:
