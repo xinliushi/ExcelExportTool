@@ -1,19 +1,15 @@
 [
     {
         "name": "测试多文件",
-        "code": "code1",
         "Sheet2": [
             {
                 "name": "测试多文件",
-                "code": "code1",
                 "Sheet3": [
                     {
                         "name": "测试多文件",
-                        "code": "code1",
                         "Sheet4": [
                             {
-                                "name": "测试多文件",
-                                "code": "code1"
+                                "name": "测试多文件"
                             }
                         ]
                     }
@@ -21,15 +17,12 @@
             },
             {
                 "name": "测试多文件",
-                "code": "code3",
                 "Sheet3": [
                     {
                         "name": "测试多文件",
-                        "code": "code3",
                         "Sheet4": [
                             {
-                                "name": "测试多文件",
-                                "code": "code3"
+                                "name": "测试多文件"
                             }
                         ]
                     }

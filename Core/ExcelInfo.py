@@ -75,6 +75,7 @@ class SheetInfo:
         self.dataType=DataType.ARRAY
         self.idHead=None
         self.masterHead=None
+        self.hasIdHead=True
         self.slaves=[]
         self.head=[]
         self.sheet={}
@@ -112,7 +113,10 @@ class ExcelInfo:
         return table
     
     def clearSheetInfos(self):
+        
         for sheetInfo in self.sheetInfos.values():
+           if sheetInfo.hasIdHead==False:
+               continue
            for r in sheetInfo.sheet:
                value = sheetInfo.sheet[r]
                if sheetInfo.idHead.name in value:
@@ -134,9 +138,10 @@ class ExcelInfo:
                     masterRow=self.sheetInfos[sheetInfo.masterHead.name].sheet[sheetInfo.masterCols[r]]
                     if sheetInfo.name not in masterRow:
                         masterRow[sheetInfo.name]={}
-                    idHead=sheetInfo.table[r][sheetInfo.idHead.name]
-                    if idHead in masterRow[sheetInfo.name]:
-                        masterRow[sheetInfo.name][idHead]=sheetInfo.table[r]
+                    # idHead=sheetInfo.table[r][sheetInfo.idHead.name]
+                    # if idHead in masterRow[sheetInfo.name]:
+                        # masterRow[sheetInfo.name][idHead]=sheetInfo.table[r]
+                    masterRow[sheetInfo.name]=sheetInfo.table[r]
             elif sheetInfo.dataType==DataType.Obj:
                 for r in range(0,len(sheetInfo.table)):
                     idHead=sheetInfo.table[r][sheetInfo.idHead.name]
@@ -144,13 +149,21 @@ class ExcelInfo:
                         self.sheetInfos[sheetInfo.masterHead.name].sheet[sheetInfo.masterCols[r]][idHead]=sheetInfo.table[r]
             else:
                 for r in range(0,len(sheetInfo.table)):
-                    for mc in range(0,len(sheetInfo.masterCols[r])):
-                        if sheetInfo.masterCols[r][mc] not in self.sheetInfos[sheetInfo.masterHead.name].sheet:
+                    if type(sheetInfo.masterCols[r]) is not list:
+                        if sheetInfo.masterCols[r] not in self.sheetInfos[sheetInfo.masterHead.name].sheet:
                             continue
-                        masterRow=self.sheetInfos[sheetInfo.masterHead.name].sheet[sheetInfo.masterCols[r][mc]]
+                        masterRow=self.sheetInfos[sheetInfo.masterHead.name].sheet[sheetInfo.masterCols[r]]
                         if sheetInfo.name not in masterRow:
                             masterRow[sheetInfo.name]=[]
                         masterRow[sheetInfo.name].append(sheetInfo.table[r])
+                    else:   
+                        for mc in range(0,len(sheetInfo.masterCols[r])):
+                            if sheetInfo.masterCols[r][mc] not in self.sheetInfos[sheetInfo.masterHead.name].sheet:
+                                continue
+                            masterRow=self.sheetInfos[sheetInfo.masterHead.name].sheet[sheetInfo.masterCols[r][mc]]
+                            if sheetInfo.name not in masterRow:
+                                masterRow[sheetInfo.name]=[]
+                            masterRow[sheetInfo.name].append(sheetInfo.table[r])
                                 
 
             
@@ -219,6 +232,7 @@ class ExcelInfo:
 
             if sheetInfo.idHead==None and sheetInfo.head!=None and len(sheetInfo.head)>0:
                 sheetInfo.idHead=sheetInfo.head[0]
+                sheetInfo.hasIdHead=False
             sheetInfo.table = []
             sheetInfo.sheet = {}
             for i_row in range(self.headRow,sheet.nrows):
@@ -257,7 +271,8 @@ class ExcelInfo:
         result = {}
         if sheetInfo.masterHead!=None:
             cell =sheet.cell_value(rowIndex,sheetInfo.masterHead.index)
-            cell=cell.split('\n')
+            if cell.count(SplitFlag.flag1)>1: # 多父级对单子级
+                cell=cell.split(SplitFlag.flag1)
             #cell = row[sheetInfo.masterHead.index]
             sheetInfo.masterCols.append(cell)
         headIndex=0
